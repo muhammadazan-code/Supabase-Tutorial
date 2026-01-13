@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/home_screen.dart' show HomeScreen;
-import 'package:supabase_tutorial/register_screen.dart';
+import 'package:supabase_tutorial/screen/home_screen.dart' show HomeScreen;
+import 'package:supabase_tutorial/screen/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
