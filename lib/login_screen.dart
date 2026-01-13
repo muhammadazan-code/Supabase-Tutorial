@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_tutorial/home_screen.dart' show HomeScreen;
 import 'package:supabase_tutorial/register_screen.dart';
@@ -15,6 +20,49 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   bool loading = false;
   final supabase = Supabase.instance.client;
+
+  Future<void> continueWithGoogle() async {
+    try {
+      String webClient = dotenv.env['WEB_CLIENT'] ?? '';
+      String androidClient = dotenv.env['ANDROID_CLIENT'] ?? '';
+      String iosClient = dotenv.env['IOS_CLIENT'] ?? '';
+
+      GoogleSignIn signIn = GoogleSignIn.instance;
+      await signIn.initialize(
+        serverClientId: webClient,
+        clientId: Platform.isAndroid ? androidClient : iosClient,
+      );
+      GoogleSignInAccount account = await signIn.authenticate();
+
+      String idToken = account.authentication.idToken ?? '';
+      final authorization =
+          await account.authorizationClient.authorizationForScopes([
+            'email',
+            'profile',
+          ]) ??
+          await account.authorizationClient.authorizeScopes([
+            'email',
+            'profile',
+          ]);
+
+      final result = await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: authorization.accessToken,
+      );
+      if (result.user != null && result.session != null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+          (context) => false,
+        );
+      } else {
+        print("User Not Found");
+      }
+    } catch (e) {
+      print("Continue with google: $e");
+    }
+  }
 
   Future<void> login() async {
     setState(() {
@@ -33,10 +81,14 @@ class _LoginScreenState extends State<LoginScreen> {
           (context) => false,
         );
       } else {
-        print("User Not Found");
+        if (kDebugMode) {
+          print("User Not Found");
+        }
       }
     } catch (e) {
-      print("Login Screen $e");
+      if (kDebugMode) {
+        print("Login Screen $e");
+      }
     } finally {
       setState(() {
         loading = false;
@@ -96,6 +148,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
               ),
+            ),
+            SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: () {
+                continueWithGoogle();
+              },
+              child: Center(child: Text("Continue with google.")),
             ),
             SizedBox(height: 50),
             TextButton(
