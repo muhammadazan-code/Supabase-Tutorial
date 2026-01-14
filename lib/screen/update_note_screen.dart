@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_tutorial/screen/home_screen.dart';
 
 class UpdateNoteScreen extends StatefulWidget {
   final Map<String, dynamic> note;
@@ -27,7 +28,13 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
             'title': titleController.text,
             'description': descriptionController.text,
           })
-          .eq('id', widget.note['id']);
+          .eq('id', widget.note['id'])
+          .then((value) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          });
     } catch (e) {
       if (kDebugMode) {
         print("Error:$e");

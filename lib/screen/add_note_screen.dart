@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_tutorial/screen/home_screen.dart';
 
 class AddNoteScreen extends StatefulWidget {
   const AddNoteScreen({super.key});
@@ -19,10 +20,19 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       loading = true;
     });
     try {
-      await supabase.from('Notes').insert({
-        'title': titleController.text,
-        'description': descriptionController.text,
-      });
+      await supabase
+          .from('Notes')
+          .insert({
+            'title': titleController.text,
+            'description': descriptionController.text,
+            'user_id': supabase.auth.currentUser!.id,
+          })
+          .then((value) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          });
     } catch (e) {
       if (kDebugMode) {
         print("Error:$e");

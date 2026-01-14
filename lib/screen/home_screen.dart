@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_tutorial/screen/add_note_screen.dart';
@@ -14,34 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final supabase = Supabase.instance.client;
-  List<Map<String, dynamic>> notes = [];
   bool loading = false;
-
-  Future<void> fetchDataFromSupabase() async {
-    setState(() {
-      loading = true;
-    });
-    try {
-      final result = await supabase.from('Notes').select();
-      setState(() {
-        notes = result;
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error:$e");
-      }
-    } finally {
-      setState(() {
-        loading = false;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    fetchDataFromSupabase();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,37 +38,50 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: loading
-          ? Center(child: CircularProgressIndicator(color: Colors.blueAccent))
-          : Padding(
-              padding: EdgeInsets.all(20),
-              child: ListView(
-                children: [
-                  for (var data in notes)
-                    ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UpdateNoteScreen(note: data),
-                          ),
-                        );
-                      },
-                      title: Text(data['title']),
-                      subtitle: Text(data['description']),
-                      trailing: IconButton(
-                        onPressed: () async {
-                          await supabase
-                              .from("Notes")
-                              .delete()
-                              .eq('id', data['id']);
-                        },
-                        icon: Icon(Icons.delete, color: Colors.red),
+      body: StreamBuilder(
+        stream: supabase.from('Notes').stream(primaryKey: ['id']),
+
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.none) {
+            return Center(
+              child: CircularProgressIndicator(color: Colors.blueAccent),
+            );
+          }
+          List<Map<String, dynamic>> notes = snapshot.data ?? [];
+          return ListView(
+            children: [
+              for (var data in notes)
+                ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateNoteScreen(note: data),
                       ),
-                    ),
-                ],
-              ),
-            ),
+                    );
+                  },
+                  title: Text(data['title']),
+                  subtitle: Text(data['description']),
+                  trailing: IconButton(
+                    onPressed: () async {
+                      print("Delete Method called");
+                      await supabase
+                          .from("Notes")
+                          .delete()
+                          .eq('id', data['id'])
+                          .then((value) {})
+                          .onError((error, stackTrace) {
+                            print("Stack Trace $stackTrace");
+                            print("Error $error");
+                          });
+                    },
+                    icon: Icon(Icons.delete, color: Colors.red),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushAndRemoveUntil(
