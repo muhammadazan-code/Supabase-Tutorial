@@ -1,11 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/home_screen.dart' show HomeScreen;
+import 'package:supabase_tutorial/screen/pick_image_screen.dart';
+import 'package:supabase_tutorial/screen/profile_screen.dart';
 import 'package:supabase_tutorial/screen/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (result.user != null && result.session != null) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
           (context) => false,
         );
       } else {
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (result.user != null && result.session != null) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => ProfileScreen()),
           (context) => false,
         );
       } else {

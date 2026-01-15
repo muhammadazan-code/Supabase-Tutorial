@@ -14,6 +14,38 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final supabase = Supabase.instance.client;
   bool loading = false;
+  RealtimeChannel? channel;
+
+  void listenChannel() {
+    channel = supabase
+        .channel('public:Notes:id=eq.21')
+        .onPostgresChanges(
+          schema: 'public',
+          table: 'Notes',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'id',
+            value: 21,
+          ),
+          event: PostgresChangeEvent.insert,
+          callback: (payload) {
+            print("Payload: $payload");
+          },
+        )
+        .subscribe();
+  }
+
+  @override
+  void initState() {
+    listenChannel();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    channel!.unsubscribe();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,15 +97,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   trailing: IconButton(
                     onPressed: () async {
                       print("Delete Method called");
-                      await supabase
-                          .from("Notes")
-                          .delete()
-                          .eq('id', data['id'])
-                          .then((value) {})
-                          .onError((error, stackTrace) {
-                            print("Stack Trace $stackTrace");
-                            print("Error $error");
-                          });
+                      try {
+                        await supabase
+                            .from("Notes")
+                            .delete()
+                            .eq('id', data['id']);
+                      } catch (e) {
+                        print("Error:$e");
+                      }
                     },
                     icon: Icon(Icons.delete, color: Colors.red),
                   ),
