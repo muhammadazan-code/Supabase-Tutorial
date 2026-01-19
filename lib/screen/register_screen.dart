@@ -70,6 +70,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  Future<void> storeFilesForWeb() async {
+    try {} catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -29,7 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
       },
     );
     channel?.onPresenceSync((payload) {
-      print("Payload: ${payload}");
+      print("Payload: $payload");
     });
     channel?.subscribe();
   }

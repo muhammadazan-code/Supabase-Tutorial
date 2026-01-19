@@ -18,10 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void listenChannel() {
     channel = supabase
-        .channel('public:Notes:id=eq.21')
+        .channel('public:notes:id=eq.21')
         .onPostgresChanges(
           schema: 'public',
-          table: 'Notes',
+          table: 'notes',
           filter: PostgresChangeFilter(
             type: PostgresChangeFilterType.eq,
             column: 'id',
@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: StreamBuilder(
-        stream: supabase.from('Notes').stream(primaryKey: ['id']),
+        stream: supabase.from('notes').stream(primaryKey: ['id']),
 
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.none) {
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       print("Delete Method called");
                       try {
                         await supabase
-                            .from("Notes")
+                            .from("notes")
                             .delete()
                             .eq('id', data['id']);
                       } catch (e) {

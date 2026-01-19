@@ -21,7 +21,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     });
     try {
       await supabase
-          .from('Notes')
+          .from('notes')
           .insert({
             'title': titleController.text,
             'description': descriptionController.text,

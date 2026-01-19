@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/pick_image_screen.dart';
 import 'package:supabase_tutorial/screen/profile_screen.dart';
 import 'package:supabase_tutorial/screen/register_screen.dart';
 

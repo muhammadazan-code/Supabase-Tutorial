@@ -15,7 +15,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
   final supabase = Supabase.instance.client;
   File? pickedFile;
 
-  uploadImage() async {
+  Future<void> uploadImage() async {
     String filename = DateTime.now().microsecondsSinceEpoch.toString();
     final ext = pickedFile?.path.split('.').last;
     try {
@@ -32,7 +32,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
     }
   }
 
-  getImages() async {
+  Future<void> getImages() async {
     final listOfImages = await supabase.storage.from("Bucket 1").list();
     for (var image in listOfImages) {
       print('Image $image');
