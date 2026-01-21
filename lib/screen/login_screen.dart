@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/profile_screen.dart';
+import 'package:supabase_tutorial/screen/image_for_web.dart';
 import 'package:supabase_tutorial/screen/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (result.user != null && result.session != null) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => ImageForWebScreen()),
           (context) => false,
         );
       } else {
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (result.user != null && result.session != null) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => ProfileScreen()),
+          MaterialPageRoute(builder: (context) => ImageForWebScreen()),
           (context) => false,
         );
       } else {
