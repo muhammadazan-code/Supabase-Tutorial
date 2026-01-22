@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_tutorial/screen/change_password_screen.dart';
 import 'package:supabase_tutorial/screen/edit_screen.dart';
+import 'package:supabase_tutorial/screen/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -60,30 +63,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             }
             final Map<String, dynamic> user = snapshot.data ?? {};
+            final String firstName = user['First Name'] ?? '';
+            final String lastName = user['Last Name'] ?? '';
+            final String profilePicture = user['profile_picture'];
+
             return Column(
               children: [
-                Container(
-                  height: 180,
-                  width: 180,
-                  decoration: BoxDecoration(
-                    color: Colors.pinkAccent.shade200,
-                    borderRadius: BorderRadius.circular(90),
-                    border: Border.all(width: 1.5, color: Colors.black54),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(user['profile_picture']),
-                    ),
-                  ),
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.blue.shade200,
+                  backgroundImage: NetworkImage(profilePicture),
                 ),
                 ListTile(
                   title: Text("Name"),
-                  trailing: Text(
-                    "${user['First Name'] ?? ""} ${user['Last Name'] ?? ""}",
-                  ),
+                  trailing: Text("$firstName $lastName"),
                 ),
                 ListTile(
                   title: Text("Email"),
                   trailing: Text("${user['email'] ?? ""}"),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (contex) => ChangePasswordScreen(),
+                    ),
+                  ),
+                  child: Container(
+                    height: 50,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Change Password",
+                        style: GoogleFonts.sacramento(fontSize: 30),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () async {
+                    try {
+                      await supabase.auth.signOut();
+                      if (!mounted) return;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    } catch (e) {
+                      print('Error: $e');
+                    }
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Logout",
+                        style: GoogleFonts.sacramento(fontSize: 30),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             );

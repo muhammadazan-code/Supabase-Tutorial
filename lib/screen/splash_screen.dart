@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/image_for_web.dart';
 import 'package:supabase_tutorial/screen/login_screen.dart';
+import 'package:supabase_tutorial/screen/profile_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (currentUser != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ImageForWebScreen()),
+          MaterialPageRoute(builder: (context) => ProfileScreen()),
         );
       } else {
         Navigator.pushReplacement(
