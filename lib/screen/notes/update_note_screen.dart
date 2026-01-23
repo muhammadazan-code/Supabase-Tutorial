@@ -1,32 +1,34 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/home_screen.dart';
+import 'package:supabase_tutorial/screen/notes/home_screen.dart';
 
-class AddNoteScreen extends StatefulWidget {
-  const AddNoteScreen({super.key});
+class UpdateNoteScreen extends StatefulWidget {
+  final Map<String, dynamic> note;
+  const UpdateNoteScreen({super.key, required this.note});
 
   @override
-  State<AddNoteScreen> createState() => _AddNoteScreenState();
+  State<UpdateNoteScreen> createState() => _UpdateNoteScreenState();
 }
 
-class _AddNoteScreenState extends State<AddNoteScreen> {
+class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final supabase = Supabase.instance.client;
   bool loading = false;
-  Future<void> addNote() async {
+
+  Future<void> updateNote() async {
     setState(() {
       loading = true;
     });
     try {
       await supabase
-          .from('notes')
-          .insert({
+          .from('Notes')
+          .update({
             'title': titleController.text,
             'description': descriptionController.text,
-            'user_id': supabase.auth.currentUser!.id,
           })
+          .eq('id', widget.note['id'])
           .then((value) {
             Navigator.push(
               context,
@@ -42,6 +44,13 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         loading = false;
       });
     }
+  }
+
+  @override
+  void initState() {
+    descriptionController.text = widget.note['description'];
+    titleController.text = widget.note['title'];
+    super.initState();
   }
 
   @override
@@ -72,12 +81,12 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                addNote();
+                updateNote();
               },
               child: Center(
                 child: loading
                     ? CircularProgressIndicator(color: Colors.blueAccent)
-                    : Text("Add Note"),
+                    : Text("Update"),
               ),
             ),
           ],

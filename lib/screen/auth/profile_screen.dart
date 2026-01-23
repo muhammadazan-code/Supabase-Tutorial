@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/change_password_screen.dart';
-import 'package:supabase_tutorial/screen/edit_screen.dart';
-import 'package:supabase_tutorial/screen/login_screen.dart';
+import 'package:supabase_tutorial/screen/auth/change_password_screen.dart';
+import 'package:supabase_tutorial/screen/notes/edit_screen.dart';
+import 'package:supabase_tutorial/screen/auth/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

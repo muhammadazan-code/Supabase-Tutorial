@@ -1,8 +1,8 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/login_screen.dart';
+import 'package:supabase_tutorial/screen/auth/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,7 +20,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool loading = false;
   final supabase = Supabase.instance.client;
-  File? pickFile;
+  // XFile? pickFile;
+  Uint8List? image;
 
   Future<void> registerAccount() async {
     setState(() {
@@ -36,12 +37,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
       print("Result.user ${result.user}");
       if (result.user != null && result.session != null) {
+        final path = 'users/${supabase.auth.currentUser?.id}';
         await supabase.storage
             .from('Bucket 1')
-            .upload('users/${result.user?.id}', pickFile!);
-        final url = supabase.storage
-            .from("Bucket 1")
-            .getPublicUrl('users/${result.user?.id}');
+            .uploadBinary(
+              path,
+              image!,
+              fileOptions: FileOptions(contentType: 'image/png'),
+            );
+        final url = supabase.storage.from("Bucket 1").getPublicUrl(path);
         await supabase.from('users').insert({
           'First Name': firstName.text,
           'Last Name': lastName.text,
@@ -69,7 +73,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> storeFilesForWeb() async {
-    try {} catch (e) {}
+    try {} catch (e) {
+      print("Error: $e");
+    }
   }
 
   @override
@@ -87,9 +93,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   final result = await ImagePicker().pickImage(
                     source: ImageSource.gallery,
                   );
+                  print("Result: $result");
                   if (result != null) {
+                    final bytes = await result.readAsBytes();
                     setState(() {
-                      pickFile = File(result.path);
+                      image = bytes;
                     });
                   }
                 },
@@ -97,12 +105,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 100,
                   width: 100,
                   decoration: BoxDecoration(
+                    border: Border.all(width: 1.2),
                     borderRadius: BorderRadius.circular(50),
-                    border: Border.all(width: 1.5, color: Colors.black),
+                    // color: const Color.fromARGB(255, 126, 135, 140),
                   ),
-                  child: pickFile == null
-                      ? Text("")
-                      : Image(image: FileImage(pickFile!)),
+                  child: Center(
+                    child: image != null
+                        ? Image(image: MemoryImage(image!))
+                        : Icon(Icons.person),
+                  ),
                 ),
               ),
 

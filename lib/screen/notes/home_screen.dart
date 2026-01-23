@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/add_note_screen.dart';
-import 'package:supabase_tutorial/screen/login_screen.dart';
-import 'package:supabase_tutorial/screen/update_note_screen.dart';
+import 'package:supabase_tutorial/screen/notes/add_note_screen.dart';
+import 'package:supabase_tutorial/screen/auth/login_screen.dart';
+import 'package:supabase_tutorial/screen/notes/update_note_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

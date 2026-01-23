@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/profile_screen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -31,13 +30,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           await supabase.auth.updateUser(
             UserAttributes(password: newPassword.text),
           );
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileScreen()),
-          );
+          Navigator.pop(context);
         }
       }
-    } on AuthApiException catch (e) {
+    } on AuthApiException {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please enter a correct password.')),
       );

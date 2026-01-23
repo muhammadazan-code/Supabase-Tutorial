@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/image_for_web.dart';
-import 'package:supabase_tutorial/screen/profile_screen.dart';
-import 'package:supabase_tutorial/screen/register_screen.dart';
+import 'package:supabase_tutorial/screen/auth/forgot_password.dart';
+import 'package:supabase_tutorial/screen/auth/services/auth_services.dart';
+import 'package:supabase_tutorial/screen/image/image_for_web.dart';
+import 'package:supabase_tutorial/screen/auth/profile_screen.dart';
+import 'package:supabase_tutorial/screen/auth/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -97,6 +99,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    AuthServices.configDeepLink(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Center(child: Text("Login"))),
@@ -128,11 +136,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
             InkWell(
               onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ForgotPasswordScreen(),
+                  ),
+                );
+              },
+              child: Container(
+                height: 50,
+                width: 130,
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Text(
+                    "Forgot Password",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: () {
                 login();
               },
               child: Container(
-                height: 100,
-                width: 100,
+                height: 50,
+                width: 130,
                 decoration: BoxDecoration(
                   color: Colors.blueAccent,
                   borderRadius: BorderRadius.circular(20),

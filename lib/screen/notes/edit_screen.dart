@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_tutorial/screen/login_screen.dart';
-import 'package:supabase_tutorial/screen/profile_screen.dart';
+import 'package:supabase_tutorial/screen/auth/login_screen.dart';
+import 'package:supabase_tutorial/screen/auth/profile_screen.dart';
 
 class EditScreen extends StatefulWidget {
   final Map<String, dynamic> notes;
