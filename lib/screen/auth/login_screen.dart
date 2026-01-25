@@ -196,6 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   context,
                   MaterialPageRoute(builder: (context) => RegisterScreen()),
                 );
+                // AuthServices.getStorageFile();
               },
               child: Text("Register?"),
             ),

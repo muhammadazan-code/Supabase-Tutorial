@@ -1,5 +1,6 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_tutorial/screen/auth/reset_password_screen.dart';
 
 class AuthServices {
@@ -14,5 +15,11 @@ class AuthServices {
         );
       }
     });
+  }
+
+  static void getStorageFile() async {
+    var supabase = Supabase.instance.client;
+    supabase.storage.from("Bucket 1").list();
+    print("Supabase images: ${supabase.storage.listBuckets()}");
   }
 }

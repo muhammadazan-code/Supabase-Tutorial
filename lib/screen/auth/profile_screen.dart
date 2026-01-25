@@ -16,23 +16,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final supabase = Supabase.instance.client;
   Map<String, dynamic> userData = {};
 
-  Future<Map<String, dynamic>> fetchDataFromDatabase() async {
-    try {
-      final result = await supabase
-          .from("users")
-          .select()
-          .eq('user_id', supabase.auth.currentUser!.id)
-          .single();
-      setState(() {
-        userData = result;
-      });
-      return result;
-    } catch (e) {
-      print("Error");
-    }
-    return {};
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +37,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: fetchDataFromDatabase(),
+          // future: fetchDataFromDatabase(),
+          future: supabase
+              .from("users")
+              .select('''
+first_name, last_name, email, profile_picture, address:addresses(city, street, postal_code, country)
+''')
+              .eq('user_id', supabase.auth.currentUser!.id)
+              .single(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.none ||
                 snapshot.data == null) {
@@ -62,26 +52,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: CircularProgressIndicator(color: Colors.blue),
               );
             }
-            final Map<String, dynamic> user = snapshot.data ?? {};
-            final String firstName = user['First Name'] ?? '';
-            final String lastName = user['Last Name'] ?? '';
-            final String profilePicture = user['profile_picture'];
-
+            final user = snapshot.data ?? {};
+            print("User: $user");
             return Column(
               children: [
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.blue.shade200,
-                  backgroundImage: NetworkImage(profilePicture),
+                  backgroundImage: NetworkImage(user['profile_picture']),
                 ),
                 ListTile(
                   title: Text("Name"),
-                  trailing: Text("$firstName $lastName"),
+                  trailing: Text(
+                    "${user['first_name'] ?? ''}${user['last_name'] ?? ''}",
+                  ),
                 ),
                 ListTile(
                   title: Text("Email"),
                   trailing: Text("${user['email'] ?? ""}"),
                 ),
+                ListTile(
+                  title: Text("Street"),
+                  trailing: Text("${user['address'][0]['street'] ?? ""}"),
+                ),
+                ListTile(
+                  title: Text("City"),
+                  trailing: Text("${user['address'][0]['city'] ?? ""}"),
+                ),
+                ListTile(
+                  title: Text("Postal Code"),
+                  trailing: Text("${user['address'][0]['postal_code'] ?? ""}"),
+                ),
+                ListTile(
+                  title: Text("Country"),
+                  trailing: Text("${user['address'][0]['country'] ?? ""}"),
+                ),
+
                 GestureDetector(
                   onTap: () => Navigator.push(
                     context,

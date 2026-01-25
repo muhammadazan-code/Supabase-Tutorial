@@ -17,6 +17,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final confirmPasswordController = TextEditingController();
   final firstName = TextEditingController();
   final lastName = TextEditingController();
+  final counrty = TextEditingController();
+  final city = TextEditingController();
+  final street = TextEditingController();
+  final postalCode = TextEditingController();
 
   bool loading = false;
   final supabase = Supabase.instance.client;
@@ -46,6 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               fileOptions: FileOptions(contentType: 'image/png'),
             );
         final url = supabase.storage.from("Bucket 1").getPublicUrl(path);
+
         await supabase.from('users').insert({
           'First Name': firstName.text,
           'Last Name': lastName.text,
@@ -53,6 +58,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'user_id': result.user?.id,
           'profile_picture': url,
         });
+        await supabase.from("addresses").insert({
+          'country': counrty.text,
+          'postal_code': postalCode.text,
+          'city': city.text,
+          'street': street.text,
+        });
+
         // String url2 = await supabase.storage
         //     .from('Bucket 1')
         //     .createSignedUrl('path', 90);
@@ -167,10 +179,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               TextFormField(
-                controller: confirmPasswordController,
+                controller: street,
                 decoration: InputDecoration(
-                  hintText: "Confirm Password",
-                  labelText: "Confirm Password",
+                  hintText: "Street",
+                  labelText: "Street",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              TextFormField(
+                controller: postalCode,
+                decoration: InputDecoration(
+                  hintText: " Postal Code",
+                  labelText: "Postal Code",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+
+              TextFormField(
+                controller: city,
+                decoration: InputDecoration(
+                  hintText: " City",
+                  labelText: "City",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              TextFormField(
+                controller: counrty,
+                decoration: InputDecoration(
+                  hintText: "Country",
+                  labelText: "Country",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
