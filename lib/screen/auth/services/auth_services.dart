@@ -22,4 +22,11 @@ class AuthServices {
     supabase.storage.from("Bucket 1").list();
     print("Supabase images: ${supabase.storage.listBuckets()}");
   }
+
+  static void screenDirect() {
+    final supabase = Supabase.instance.client;
+    final user = supabase.auth.currentSession;
+    final emailVerfified = supabase.auth.currentUser;
+    if (user != null) {}
+  }
 }

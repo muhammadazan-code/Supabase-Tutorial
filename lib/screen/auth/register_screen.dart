@@ -36,6 +36,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: passwordController.text,
         email: emailController.text,
       );
+
+      print(
+        "User Email: ${result.user!.userMetadata!["userMetadata"]["email_verified"]}",
+      );
       if (result.user == null && result.session == null) {
         print("User is null");
       }
